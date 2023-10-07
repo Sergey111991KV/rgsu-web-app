@@ -1,4 +1,18 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true }
+  devtools: { enabled: true },
+  modules: ['@vite-pwa/nuxt'],
+  pwa: {
+    manifest: {
+      name: 'Robots',
+      short_name: 'Robots',
+      description: 'Robots'
+    },
+    workbox: {
+      navigateFallback: '/'
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module'
+    }
+  }
 })
