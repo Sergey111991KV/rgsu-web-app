@@ -1,5 +1,33 @@
 <template>
-  <div>
+  <div class="default-layout">
     <slot />
   </div>
 </template>
+
+<style>
+.default-layout{
+  height: 100vh;
+  --bg-size: 400%;
+  --color-one: var(--tg-theme-bg-color);
+  --color-two: #7eace7;
+  background: linear-gradient(
+      90deg,
+      var(--color-one),
+      var(--color-two),
+      var(--color-one)
+  )
+  0 0 / var(--bg-size) 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .default-layout {
+    animation: move-bg 32s linear infinite;
+  }
+  @keyframes move-bg {
+    to {
+      background-position: var(--bg-size) 0;
+    }
+  }
+}
+
+</style>
