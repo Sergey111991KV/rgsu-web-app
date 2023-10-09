@@ -13,6 +13,10 @@
     <button class="robot-button-action" @click="audioStartRecord">
       Start Audio
     </button>
+    <button class="robot-button-action" @click="close">
+      Close
+    </button>
+
 <!--    <audio-recorder-->
 <!--        upload-url="YOUR_API_URL"-->
 <!--        :attempts="3"-->
@@ -56,14 +60,18 @@ export default {
   },
   methods: {
     help() {
-      // const tg = window.Telegram.WebApp
-      // tg.sendDate
+      const tg = window.Telegram.WebApp;
+      tg.sendDate('alla pugacheva');
     },
     me() {
 
     },
     clean() {
 
+    },
+    close() {
+      const tg = window.Telegram.WebApp;
+      tg.close()
     },
     audioStartRecord() {
       this.audioState = 'start'

@@ -7,9 +7,11 @@
   </div>
 </template>
 
+
 <script setup>
 useHead({
-  script: [{ children: "console.log('Hello, world!');" }],
+  // script: [{ children: "console.log('Hello, world!');" }],
+  script: [{src: "https://telegram.org/js/telegram-web-app.js"}],
 });
 </script>
 
