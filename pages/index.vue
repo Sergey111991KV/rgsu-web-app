@@ -10,30 +10,46 @@
     <button class="robot-button-action" @click="clean">
       Clean
     </button>
-    <button class="robot-button-action" @click="audioStartRecord">
-      Start Audio
-    </button>
-<!--    <audio-recorder-->
-<!--        upload-url="YOUR_API_URL"-->
-<!--        :attempts="3"-->
-<!--        :time="2"-->
-
-<!--        :before-recording="callback"-->
-<!--        :pause-recording="callback"-->
-<!--        :after-recording="callback"-->
-<!--        :select-record="callback"-->
-<!--        :before-upload="callback"-->
-<!--        :successful-upload="callback"-->
-<!--        :failed-upload="callback"/>-->
-<!--    <button @click="audioPauseRecord">-->
-<!--      Pause-->
-<!--    </button>-->
-<!--    <button @click="audioPlayRecord">-->
-<!--      Play-->
-<!--    </button>-->
-<!--    <button @click="audioStopRecord">-->
-<!--      Stop-->
-<!--    </button>-->
+<!--        audioState === null -->
+    <div v-if="!audioState">
+      <button  class="robot-button-action" @click="audioStartRecord">
+        Start Audio
+      </button>
+    </div>
+    <!--    audioState === start -->
+    <div v-if="audioState === 'start'">
+      <button class="robot-button-action" @click="audioPlayRecord">
+        Play
+      </button>
+    </div>
+    <!--    audioState === play -->
+    <div v-if="audioState === 'play'">
+      <button class="robot-button-action" @click="audioPauseRecord">
+        Pause
+      </button>
+      <button class="robot-button-action" @click="audioStopRecord">
+        Stop
+      </button>
+    </div>
+    <!--    audioState === pause -->
+    <div v-if="audioState === 'pause'">
+      <button class="robot-button-action" @click="audioPlayRecord">
+        Play
+      </button>
+      <button class="robot-button-action" @click="audioStopRecord">
+        Stop
+      </button>
+    </div>
+    <!--    audioState === stop -->
+    <div v-if="audioState === 'stop'">
+      <button class="robot-button-action" @click="audioPlayRecord">
+        Play
+      </button>
+      <button class="robot-button-action" @click="sendPlayRecord">
+        Отправить
+      </button>
+    </div>
+    <audio style="visibility: hidden" src="" id="audioElement" controls></audio>
 <!--    <audio class="audio-player" controls autoplay>-->
 <!--      <source src="~/assets/mp3/SAINt_Remix.mp3" type="audio/ogg">-->
 <!--      <source src="~/assets/mp3/SAINt_Remix.mp3" type="audio/mpeg">-->
@@ -46,7 +62,9 @@
 export default {
   data() {
     return {
-      audioState: null
+      audioState: null,
+      audioChunks: [],
+      rec: null,
     }
   },
   mounted() {
@@ -67,19 +85,60 @@ export default {
     },
     audioStartRecord() {
       this.audioState = 'start'
+      this.startusingBrowserMicrophone(true);
     },
     audioPauseRecord() {
-
+      this.audioState = 'pause'
     },
     audioPlayRecord() {
-
+      this.audioState = 'play'
     },
     audioStopRecord() {
-
+      this.rec.stop();
+      this.audioState = 'stop'
     },
-    callback (data) {
-      console.debug(data)
-    }
+    sendPlayRecord() {
+      this.rec = null;
+      this.audioState = null;
+      console.log('send to API!!')
+    },
+
+    async getUserMedia(constraints) {
+      if (window.navigator.mediaDevices) {
+        return window.navigator.mediaDevices.getUserMedia(constraints);
+      }
+
+      let legacyApi =
+          navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia ||
+          navigator.msGetUserMedia;
+
+      if (legacyApi) {
+        return new Promise(function (resolve, reject) {
+          legacyApi.bind(window.navigator)(constraints, resolve, reject);
+        });
+      } else {
+        alert("user api not supported");
+      }
+    },
+    handlerFunction(stream) {
+      this.rec = new MediaRecorder(stream);
+      this.rec.start();
+      this.rec.ondataavailable = (e) => {
+        this.audioChunks.push(e.data);
+        if (this.rec.state == "inactive") {
+          let blob = new Blob(this.audioChunks, { type: "audio/mp3" });
+          console.log(blob);
+          document.getElementById("audioElement").src = URL.createObjectURL(blob);
+        }
+      };
+    },
+    startusingBrowserMicrophone(boolean) {
+      this.getUserMedia({ audio: boolean }).then((stream) => {
+      this.handlerFunction(stream);
+      });
+    },
   }
 }
 </script>
@@ -115,7 +174,7 @@ export default {
   margin: 0;
   outline: none;
   padding: 1rem 1.3rem;
-  quotes: auto;
+  //quotes: auto;
   text-align: center;
   text-decoration: none;
   transition: all .15s;

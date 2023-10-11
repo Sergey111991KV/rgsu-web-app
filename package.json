@@ -17,6 +17,5 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "vue-audio-recorder": "^3.0.1"
   }
 }
