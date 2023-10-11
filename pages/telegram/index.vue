@@ -60,8 +60,8 @@ export default {
   },
   methods: {
     help() {
-      const tg = window.Telegram.WebApp;
-      tg.sendDate('alla pugacheva');
+      const tg = window.Telegram.WebApp
+      tg.sendDate('alla pugacheva')
     },
     me() {
 
@@ -70,7 +70,7 @@ export default {
 
     },
     close() {
-      const tg = window.Telegram.WebApp;
+      const tg = window.Telegram.WebApp
       tg.close()
     },
     audioStartRecord() {

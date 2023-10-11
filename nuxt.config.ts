@@ -5,7 +5,10 @@ export default defineNuxtConfig({
     manifest: {
       name: 'Robots',
       short_name: 'Robots',
-      description: 'Robots'
+      description: 'Robots',
+      start_url : "/",
+      lang : "ru-RU",
+      display : "standalone"
     },
     workbox: {
       navigateFallback: '/'
