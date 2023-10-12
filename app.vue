@@ -7,7 +7,6 @@
   </div>
 </template>
 
-
 <script setup>
 useHead({
   // script: [{ children: "console.log('Hello, world!');" }],
